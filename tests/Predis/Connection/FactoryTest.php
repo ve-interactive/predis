@@ -472,6 +472,33 @@ class FactoryTest extends PredisTestCase
         $factory->aggregate($cluster, array());
     }
 
+    /**
+     * @group disconnected
+     */
+    public function testCreateConnectionWithArrayParametersAndDefaultHost()
+    {
+        $factory = new Factory();
+
+        $factory->setDefaultParameters($defaultParams = array(
+            'host' => '127.0.0.1',
+        ));
+
+        $connection = $factory->create($inputParams = array(
+            'host' => 'localhost',
+            'port' => 8000,
+            'persistent' => true,
+        ));
+
+        $parameters = $connection->getParameters();
+
+        $this->assertInstanceOf('Predis\Connection\NodeConnectionInterface', $connection);
+
+        $this->assertEquals($defaultParams['host'], $parameters->host);
+        $this->assertEquals($inputParams['port'], $parameters->port);
+        $this->assertEquals($inputParams['persistent'], $parameters->persistent);
+        $this->assertNull($parameters->path);
+    }
+
     // ******************************************************************** //
     // ---- HELPER METHODS ------------------------------------------------ //
     // ******************************************************************** //

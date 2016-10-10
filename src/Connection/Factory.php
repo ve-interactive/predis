@@ -159,6 +159,9 @@ class Factory implements FactoryInterface
 
         if ($this->defaults) {
             $parameters += $this->defaults;
+            if (isset($this->defaults['host'])) {
+                $parameters['host'] = $this->defaults['host'];
+            }
         }
 
         return new Parameters($parameters);
